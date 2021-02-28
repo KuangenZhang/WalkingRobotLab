@@ -1,0 +1,67 @@
+<mujoco model="sustech_biped2d">
+    <compiler angle="degree" coordinate="local" inertiafromgeom="auto"/>
+    <default>
+        <joint armature="0" damping="0.0" limited="true" solimplimit="0 .8 .03" solreflimit=".02 1" stiffness="0"/>
+        <geom conaffinity="0" condim="3" contype="1" friction=".9 .1 .1" rgba="0.8 0.6 .4 1" solimp="0.0 0.8 0.01"
+              solref="0.02 1"/>
+    </default>
+    <size nstack="300000" nuser_geom="1"/>
+    <option gravity="0 0 -9.81" timestep="0.002"/>
+<!--    <option gravity="0 0 0" timestep="0.002"/>-->
+    <worldbody>
+        <body name="torso" pos="0 0 1.0">
+            <inertial pos="0 0 0.2" mass="0" diaginertia="0.1675 0.1675 0.015"/>
+            <geom fromto="0 0 0 0 0 0.4" name="torso" size="0.05" type="capsule"/>
+            <body name="lthigh" pos="0 0 0">
+                <joint axis="0 -1 0" damping="0.0" name="lthigh" pos="0 0 0" range="-45 135" stiffness="0"
+                       type="hinge"/>
+                <inertial pos="0 0 -0.15" mass="5"/>
+                <geom axisangle="0 -1 0 0" name="lthigh" pos="0 0 -0.15" rgba="0 0.4470 0.7410 1"
+                      size="0.03 0.15" type="capsule"/>
+                <body name="lshin" pos="0 0 -0.3">
+                    <joint axis="0 -1 0" damping="0.0" name="lshin" pos="0 0 0" range="-135 0" stiffness="0"
+                           type="hinge"/>
+                    <inertial pos="0 0 -0.15" mass="5"/>
+                    <geom axisangle="0 -1 0 0" name="lshin" pos="0 0 -0.15" rgba="0.8500 0.3250 0.0980 1"
+                          size="0.03 0.15" type="capsule"/>
+                    <body name="lfoot" pos="0 0 -0.3">
+                        <joint axis="0 -1 0" damping="0.0" name="lfoot" pos="0 0 0" range="-50 50" stiffness="0"
+                               type="hinge"/>
+                        <inertial pos="0 0 0" axisangle="0 -1 0 90" mass="2"/>
+                        <geom axisangle="0 -1 0 90" name="lfoot" pos="0 0 0" rgba="0.4940  0.1840 0.5560 1"
+                              size="0.03 0.10" type="capsule"/>
+                    </body>
+                </body>
+            </body>
+            <body name="rthigh" pos="0 0 0">
+                <joint axis="0 -1 0" damping="0.0" name="rthigh" pos="0 0 0" range="-45 135" stiffness="0"
+                       type="hinge"/>
+                <inertial pos="0 0 -0.15" mass="5"/>
+                <geom axisangle="0 -1 0 0" name="rthigh" pos="0 0 -0.15" rgba="0.8500 0.3250 0.0980 1"
+                      size="0.03 0.15" type="capsule"/>
+                <body name="rshin" pos="0 0 -0.3">
+                    <joint axis="0 -1 0" damping="0.0" name="rshin" pos="0 0 0" range="-135 0" stiffness="0"
+                           type="hinge"/>
+                    <inertial pos="0 0 -0.15" mass="5"/>
+                    <geom axisangle="0 -1 0 0" name="rshin" pos="0 0 -0.15" rgba="0.4940 0.1840 0.5560 1"
+                          size="0.03 0.15" type="capsule"/>
+                    <body name="rfoot" pos="0 0 -0.3">
+                        <joint axis="0 -1 0" damping="0.0" name="rfoot" pos="0 0 0" range="-50 50" stiffness="0"
+                               type="hinge"/>
+                        <inertial pos="0 0 0" axisangle="0 -1 0 90" mass="2"/>
+                        <geom axisangle="0 -1 0 90" name="rfoot" pos="0 0 0" rgba="0 0.4470 0.7410 1"
+                              size="0.03 0.10" type="capsule"/>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+    <actuator>
+        <motor ctrllimited="true" ctrlrange="-100.0 100.0" gear="1" joint="lthigh" name="lthigh"/>
+        <motor ctrllimited="true" ctrlrange="-100.0 100.0" gear="1" joint="lshin" name="lshin"/>
+        <motor ctrllimited="true" ctrlrange="-100.0 100.0" gear="1" joint="lfoot" name="lfoot"/>
+        <motor ctrllimited="true" ctrlrange="-100.0 100.0" gear="1" joint="rthigh" name="rthigh"/>
+        <motor ctrllimited="true" ctrlrange="-100.0 100.0" gear="1" joint="rshin" name="rshin"/>
+        <motor ctrllimited="true" ctrlrange="-100.0 100.0" gear="1" joint="rfoot" name="rfoot"/>
+    </actuator>
+</mujoco>
