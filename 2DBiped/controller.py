@@ -6,6 +6,11 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 
+'''
+Obtain position and velocity of the hip.
+Obtain gait event.
+'''
+
 class Biped2D(object):
     def __init__(self):
         self.physicsClient = p.connect(p.GUI)  # or p.DIRECT for non-graphical version
@@ -16,22 +21,24 @@ class Biped2D(object):
         self.robot = p.loadMJCF("sustech_biped2d.xml", flags = p.MJCF_COLORS_FROM_FILE)[0]
         self.joints = self.get_joints()
         self.n_j = len(self.joints)
+        self.base_dof = 3  # degree of freedom of the base
         self.simu_f = 500 # Simulation frequency, Hz
         self.motion_f = 2 # Controlled motion frequency, Hz
         self.q_vec = np.zeros(self.n_j)
         self.dq_vec = np.zeros(self.n_j)
         self.q_mat = np.zeros((self.simu_f * 3, self.n_j))
-        self.q_d_mat = np.zeros((self.simu_f * 3, self.n_j))
-        # self.init_plot()
+        self.q_d_mat = np.zeros((self.simu_f * 3, self.n_j-self.base_dof))
+        self.t = 0
 
+        self.init_plot()
 
     def run(self):
         for i in range(int(5e3)):
-            t = i / self.simu_f
-            torque_array = self.controller(t)
+            self.t += 1 / self.simu_f
+            torque_array = self.controller(self.t)
             self.q_vec, self.dq_vec = self.step(torque_array)
-            # if 0 == i % 20:
-            #     self.update_plot()
+            if 0 == i % 20:
+                self.update_plot()
             time.sleep(1/self.simu_f)
         p.disconnect()
 
@@ -52,7 +59,7 @@ class Biped2D(object):
                 all_joints.append(j)
                 p.setJointMotorControl2(self.robot, j,
                                         controlMode=p.VELOCITY_CONTROL, force=0)
-        joints = all_joints[3:]
+        joints = all_joints
         return joints
 
     def get_joint_states(self):
@@ -71,7 +78,7 @@ class Biped2D(object):
         '''
         if torque_array is None:
             torque_array = np.zeros(self.n_j)
-        for j in range(len(self.joints)):
+        for j in range(len(self.joints[self.base_dof:])):
             p.setJointMotorControl2(self.robot, self.joints[j], p.TORQUE_CONTROL, force=torque_array[j])
 
     def controller(self, t, type='joint'):
@@ -86,7 +93,7 @@ class Biped2D(object):
         self.q_d_mat[:-1] = self.q_d_mat[1:]
         self.q_d_mat[-1] = q_d_vec
         dq_d_vec = 2*np.pi*self.motion_f*a*np.cos(2*np.pi*self.motion_f*(t-phi_vec))
-        return self.joint_impedance_controller(self.q_vec, self.dq_vec, q_d_vec, dq_d_vec)
+        return self.joint_impedance_controller(self.q_vec[self.base_dof:], self.dq_vec[self.base_dof:], q_d_vec, dq_d_vec)
 
     def joint_impedance_controller(self, q_vec, dq_vec, q_d_vec, dq_d_vec):
         k = 2000
