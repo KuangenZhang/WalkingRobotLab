@@ -7,27 +7,33 @@
     </default>
     <size nstack="300000" nuser_geom="1"/>
     <option gravity="0 0 -9.81" timestep="0.002"/>
-<!--    <option gravity="0 0 0" timestep="0.002"/>-->
     <worldbody>
-        <body name="torso" pos="0 0 1.0">
-            <inertial pos="0 0 0.2" mass="0" diaginertia="0.1675 0.1675 0.015"/>
+        <body name="torso" pos="0 0 0.6">
+            <camera name="track" mode="trackcom" pos="0 -3 0.3" xyaxes="1 0 0 0 0 1"/>
+            <joint armature="0" axis="1 0 0" damping="0" limited="false" name="rootx" pos="0 0 0" stiffness="0"
+                   type="slide"/>
+            <joint armature="0" axis="0 0 1" damping="0" limited="false" name="rootz" pos="0 0 0" stiffness="0"
+                   type="slide"/>
+            <joint armature="0" axis="0 -1 0" damping="0" limited="false" name="rooty" pos="0 0 0" stiffness="0"
+                   type="hinge"/>
+            <inertial pos="0 0 0.2" mass="12" diaginertia="0.1675 0.1675 0.015"/>
             <geom fromto="0 0 0 0 0 0.4" name="torso" size="0.05" type="capsule"/>
             <body name="lthigh" pos="0 0 0">
                 <joint axis="0 -1 0" damping="0.0" name="lthigh" pos="0 0 0" range="-45 135" stiffness="0"
                        type="hinge"/>
-                <inertial pos="0 0 -0.15" mass="5"/>
+                <inertial pos="0 0 -0.15" mass="0.5" diaginertia="0.0039 0.0039 0.000225"/>
                 <geom axisangle="0 -1 0 0" name="lthigh" pos="0 0 -0.15" rgba="0 0.4470 0.7410 1"
                       size="0.03 0.15" type="capsule"/>
                 <body name="lshin" pos="0 0 -0.3">
                     <joint axis="0 -1 0" damping="0.0" name="lshin" pos="0 0 0" range="-135 0" stiffness="0"
                            type="hinge"/>
-                    <inertial pos="0 0 -0.15" mass="5"/>
+                    <inertial pos="0 0 -0.15" mass="0.5" diaginertia="0.0039 0.0039 0.000225"/>
                     <geom axisangle="0 -1 0 0" name="lshin" pos="0 0 -0.15" rgba="0.8500 0.3250 0.0980 1"
                           size="0.03 0.15" type="capsule"/>
                     <body name="lfoot" pos="0 0 -0.3">
                         <joint axis="0 -1 0" damping="0.0" name="lfoot" pos="0 0 0" range="-50 50" stiffness="0"
                                type="hinge"/>
-                        <inertial pos="0 0 0" axisangle="0 -1 0 90" mass="2"/>
+                        <inertial pos="0 0 0" axisangle="0 -1 0 90" mass="0.2" diaginertia="0.0007 0.0007 0.00009"/>
                         <geom axisangle="0 -1 0 90" name="lfoot" pos="0 0 0" rgba="0.4940  0.1840 0.5560 1"
                               size="0.03 0.10" type="capsule"/>
                     </body>
@@ -36,19 +42,19 @@
             <body name="rthigh" pos="0 0 0">
                 <joint axis="0 -1 0" damping="0.0" name="rthigh" pos="0 0 0" range="-45 135" stiffness="0"
                        type="hinge"/>
-                <inertial pos="0 0 -0.15" mass="5"/>
+                <inertial pos="0 0 -0.15" mass="0.5" diaginertia="0.0039 0.0039 0.000225"/>
                 <geom axisangle="0 -1 0 0" name="rthigh" pos="0 0 -0.15" rgba="0.8500 0.3250 0.0980 1"
                       size="0.03 0.15" type="capsule"/>
                 <body name="rshin" pos="0 0 -0.3">
                     <joint axis="0 -1 0" damping="0.0" name="rshin" pos="0 0 0" range="-135 0" stiffness="0"
                            type="hinge"/>
-                    <inertial pos="0 0 -0.15" mass="5"/>
+                    <inertial pos="0 0 -0.15" mass="0.5" diaginertia="0.0039 0.0039 0.000225"/>
                     <geom axisangle="0 -1 0 0" name="rshin" pos="0 0 -0.15" rgba="0.4940 0.1840 0.5560 1"
                           size="0.03 0.15" type="capsule"/>
                     <body name="rfoot" pos="0 0 -0.3">
                         <joint axis="0 -1 0" damping="0.0" name="rfoot" pos="0 0 0" range="-50 50" stiffness="0"
                                type="hinge"/>
-                        <inertial pos="0 0 0" axisangle="0 -1 0 90" mass="2"/>
+                        <inertial pos="0 0 0" axisangle="0 -1 0 90" mass="0.2" diaginertia="0.0007 0.0007 0.00009"/>
                         <geom axisangle="0 -1 0 90" name="rfoot" pos="0 0 0" rgba="0 0.4470 0.7410 1"
                               size="0.03 0.10" type="capsule"/>
                     </body>
