@@ -5,6 +5,7 @@ import numpy as np
 import matplotlib
 import planner
 import cv2
+import time
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 
@@ -220,6 +221,7 @@ class Biped2D(object):
         # cv2.imshow('image', image)
         # cv2.waitKey(1)
         self.out_video.write(image[...,:3])
+        cv2.imwrite('results/{}.jpg'.format(time.time()))
 
 
 
