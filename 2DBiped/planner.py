@@ -4,15 +4,20 @@ from scipy.special import comb
 g = 9.81  # m/s^2
 l_leg = 0.3
 
-def calc_init_paras(zh = 0.4):
+
+def update_paras(zh, vh_actual=None):
     w = np.sqrt(g / zh)
     half_step_length = calc_gait_paras(zh)
     xh_0 = -half_step_length
-    vh_0 = 2 * w * abs(xh_0)
+    vh_0 = 1.5 * w * abs(xh_0)
     xh_1 = -xh_0
     vh_1 = vh_0
     xf_0 = 2 * xh_0
-    xf_1 = 2 * xh_1
+    if vh_actual is None:
+        vh_actual = vh_0
+    k = -0.1 - 0.1 * (vh_0 - vh_actual)
+    print(k)
+    xf_1 = (2 + k) * xh_1
     T_sw = calc_T_sw(xh_0, vh_0, xh_1, vh_1, zh)
     paras = {'xh_0': xh_0,
              'vh_0': vh_0,
@@ -26,7 +31,7 @@ def calc_init_paras(zh = 0.4):
 
 
 def calc_gait_paras(z=0.4):
-    leg_length = 0.55
+    leg_length = 0.58
     half_step_length = np.sqrt(leg_length ** 2 - z ** 2)
     return half_step_length
 
@@ -38,9 +43,7 @@ def calc_foot_trajectory_control_points(xf_0, xf_1):
         [-0.05, 0.1],
         [0, 0.1],
         [0.05, 0.1],
-        [0.5 * xf_1, 0.05],
-        [xf_1, 0.025],
-        [xf_1 + 0.1, 0],
+        [xf_1 + 0.2, 0.1],
         [xf_1, 0]])
     return control_points
 
@@ -50,6 +53,10 @@ def calc_T_sw(xh_0, vh_0, xh_1, vh_1, zh):
     T_sw = np.log((w * xh_1 + vh_1) / (w * xh_0 + vh_0)) / w
     return T_sw
 
+def calc_hip_and_ankle_position(t, paras):
+    xh_t, vh_t = calc_hip_trajectory(t, paras['xh_0'], paras['vh_0'], paras['zh'])
+    xzf_t, v_xzf_t = calc_foot_tajectory(t, paras['T_sw'], paras['xf_0'], paras['xf_1'])
+    return xh_t, xzf_t[0], xzf_t[1]
 
 def calc_hip_trajectory(t, xh_0, vh_0, zh):
     w = np.sqrt(g / zh)
@@ -97,12 +104,28 @@ def bezier_curve(s, points, T_sw):
 
 def calc_joint_angle(xh, zh, xf, zf):
     l_hf = np.sqrt((xh-xf)**2 + (zh - zf)**2)
-    q_knee = -(np.pi - 2 * np.arcsin(0.5 * l_hf/l_leg))
+    q_knee = -(np.pi - 2 * np.arcsin(np.clip(0.5 * l_hf/l_leg, -1, 1)))
     theta = -q_knee / 2
     q_hip = np.arctan2(xf - xh, zh - zf) + theta
     q_ankle = -q_knee - q_hip
-    return q_hip, q_knee, q_ankle
+    return np.array([q_hip, q_knee, q_ankle])
 
+
+def joint_2_cartesian_position(q_vec, l_vec = None):
+    '''
+    :param q_vec: [q_hip, q_knee]
+    :param l_vec: [l_thigh, l_shank]
+    :return: [x z]
+    '''
+    if l_vec is None:
+        l_vec = np.array([0.3, 0.3])
+    x = 0
+    z = 0
+    for i in range(len(q_vec)):
+        q_sum = np.sum(q_vec[:i+1])
+        x += l_vec[i] * np.sin(q_sum)
+        z += -(l_vec[i] * np.cos(q_sum))
+    return np.asarray([x, z])
 
 def calc_robot_points(xh, zh, q_hip, q_knee, q_ankle):
     l_foot = 0.1
@@ -127,8 +150,8 @@ def plot_trajectory(xh_t, z_h, xzf_t):
 
 
 def main():
-    zh = 0.5
-    paras = calc_init_paras(zh=zh)
+    zh = 0.55
+    paras = update_paras(zh=zh)
     t_vec = np.linspace(0, paras['T_sw'], num=100)
     xh_t, vh_t = calc_hip_trajectory(t_vec, paras['xh_0'], paras['vh_0'], paras['zh'])
     xzf_t, v_xzf_t = (np.zeros((len(t_vec), 2)), np.zeros((len(t_vec), 2)))
