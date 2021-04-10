@@ -1,6 +1,6 @@
 # WalkingRobotLab
 
-## Lab 1
+## Lab
 Download the code and run:
 ```
 cd 2DBiped
