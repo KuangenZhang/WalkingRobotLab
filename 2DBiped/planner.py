@@ -15,7 +15,7 @@ def update_paras(zh, vh_actual=None):
     xf_0 = 2 * xh_0
     if vh_actual is None:
         vh_actual = vh_0
-    k = -0.1 - 0.1 * (vh_0 - vh_actual)
+    k = -0.1 - 0.05 * (vh_0 - vh_actual)
     print(k)
     xf_1 = (2 + k) * xh_1
     T_sw = calc_T_sw(xh_0, vh_0, xh_1, vh_1, zh)

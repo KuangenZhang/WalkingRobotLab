@@ -4,7 +4,6 @@ import pybullet_data
 import numpy as np
 import matplotlib
 import planner
-import cv2
 import time
 matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
@@ -45,13 +44,13 @@ class Biped2D(object):
         # self.init_vedio()
         # self.init_plot()
 
-    def init_video(self):
-        image_info = p.getCameraImage(640, 480)
-        image = np.array(image_info[2])
-        self.img_width, self.img_height = (image.shape[1], image.shape[0])
-        print(image.shape)
-        fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-        self.out_video = cv2.VideoWriter('locomotion.mp4', fourcc, 30, (self.img_width, self.img_height))
+    # def init_video(self):
+    #     image_info = p.getCameraImage(640, 480)
+    #     image = np.array(image_info[2])
+    #     self.img_width, self.img_height = (image.shape[1], image.shape[0])
+    #     print(image.shape)
+    #     fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+    #     self.out_video = cv2.VideoWriter('locomotion.mp4', fourcc, 30, (self.img_width, self.img_height))
 
     def init_pos_and_vel_of_robot(self):
         self.walking_paras = planner.update_paras(zh=self.zh)
@@ -214,14 +213,14 @@ class Biped2D(object):
         plt.draw()
         plt.pause(0.001)
 
-    def capture_robot_motion(self):
-        image_info = p.getCameraImage(640, 480)
-        image = np.array(image_info[2])
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        # cv2.imshow('image', image)
-        # cv2.waitKey(1)
-        self.out_video.write(image[...,:3])
-        cv2.imwrite('results/{}.jpg'.format(time.time()))
+    # def capture_robot_motion(self):
+    #     image_info = p.getCameraImage(640, 480)
+    #     image = np.array(image_info[2])
+    #     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+    #     # cv2.imshow('image', image)
+    #     # cv2.waitKey(1)
+    #     self.out_video.write(image[...,:3])
+    #     cv2.imwrite('results/{}.jpg'.format(time.time()))
 
 
 
